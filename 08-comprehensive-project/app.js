@@ -117,8 +117,7 @@ class TodoApp {
 
     deleteTodo(id) {
         this.todos = this.todos.filter(t => t.id !== id);
-        // BUG: 忘記呼叫 saveTodos()，導致刪除後重新整理會還原
-        // this.saveTodos();
+        this.saveTodos();
         this.render();
     }
 
