@@ -46,17 +46,17 @@
 
         <ul id="todoList" class="todo-list">
             <!-- 待辦事項將動態插入這裡 -->
-            <!-- 編輯任務 Modal -->
-            <div id="editModal" class="modal" style="display:none;">
-                <div class="modal-content">
-                    <span id="closeEditModal" class="close">&times;</span>
-                    <h2>Edit Task</h2>
-                    <input type="text" id="editTaskName" />
-                    <input type="date" id="editTaskDeadline" />
-                    <button id="saveEditBtn" class="btn btn-primary">Save</button>
-                </div>
-            </div>
         </ul>
+    <!-- 編輯任務 Modal (moved outside todoList) -->
+    <div id="editModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span id="closeEditModal" class="close">&times;</span>
+            <h2>Edit Task</h2>
+            <input type="text" id="editTaskName" />
+            <input type="date" id="editTaskDeadline" />
+            <button id="saveEditBtn" class="btn btn-primary">Save</button>
+        </div>
+    </div>
 
         <div class="info-section">
             <h2>🤖 關於這個專案</h2>

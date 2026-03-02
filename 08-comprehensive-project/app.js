@@ -230,13 +230,16 @@ class TodoApp {
 }
 
 // 初始化應用
-const todoApp = new TodoApp();
-// Modal event listeners
-document.getElementById('closeEditModal').onclick = () => todoApp.closeEditModal();
-document.getElementById('saveEditBtn').onclick = () => todoApp.saveEdit();
-window.onclick = function(event) {
-    const modal = document.getElementById('editModal');
-    if (event.target === modal) {
-        todoApp.closeEditModal();
-    }
-};
+window.addEventListener('DOMContentLoaded', () => {
+    const todoApp = new TodoApp();
+    // Modal event listeners
+    document.getElementById('closeEditModal').onclick = () => todoApp.closeEditModal();
+    document.getElementById('saveEditBtn').onclick = () => todoApp.saveEdit();
+    window.onclick = function(event) {
+        const modal = document.getElementById('editModal');
+        if (event.target === modal) {
+            todoApp.closeEditModal();
+        }
+    };
+    window.todoApp = todoApp; // expose for inline handlers
+});
