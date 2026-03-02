@@ -1,3 +1,12 @@
+/* Drag and drop styles */
+.todo-item.dragging {
+    opacity: 0.5;
+    background: #e2e8f0;
+}
+.todo-item.drag-over {
+    border: 2px dashed var(--primary-color);
+    background: #f0f4ff;
+}
 /* Modal styles */
 .modal {
     display: none;
