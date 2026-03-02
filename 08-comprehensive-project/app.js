@@ -159,8 +159,14 @@ class TodoApp {
         if (filteredTodos.length === 0) {
             todoList.innerHTML = '<li class="empty-state">沒有任務</li>';
         } else {
-            todoList.innerHTML = filteredTodos.map(todo => `
-                <li class="todo-item ${todo.completed ? 'completed' : ''}">
+            todoList.innerHTML = filteredTodos.map((todo, idx) => `
+                <li class="todo-item ${todo.completed ? 'completed' : ''}"
+                    draggable="true"
+                    data-id="${todo.id}"
+                    ondragstart="todoApp.handleDragStart(event, ${idx})"
+                    ondragover="todoApp.handleDragOver(event, ${idx})"
+                    ondrop="todoApp.handleDrop(event, ${idx})"
+                    ondragend="todoApp.handleDragEnd(event)">
                     <input type="checkbox" 
                            class="todo-checkbox" 
                            ${todo.completed ? 'checked' : ''} 
@@ -173,6 +179,43 @@ class TodoApp {
             `).join('');
         }
         this.updateStats();
+    }
+
+    handleDragStart(e, idx) {
+        this.draggedIdx = idx;
+        e.dataTransfer.effectAllowed = 'move';
+        e.target.classList.add('dragging');
+    }
+
+    handleDragOver(e, idx) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const items = document.querySelectorAll('.todo-item');
+        items.forEach(item => item.classList.remove('drag-over'));
+        if (typeof idx === 'number') {
+            items[idx].classList.add('drag-over');
+        }
+    }
+
+    handleDrop(e, idx) {
+        e.preventDefault();
+        const fromIdx = this.draggedIdx;
+        if (fromIdx === undefined || fromIdx === idx) return;
+        // Move the dragged item to the new position
+        const moved = this.todos.splice(fromIdx, 1)[0];
+        this.todos.splice(idx, 0, moved);
+        this.saveTodos();
+        this.render();
+        this.draggedIdx = undefined;
+    }
+
+    handleDragEnd(e) {
+        const items = document.querySelectorAll('.todo-item');
+        items.forEach(item => {
+            item.classList.remove('dragging');
+            item.classList.remove('drag-over');
+        });
+        this.draggedIdx = undefined;
     }
 
     openEditModal(id) {
