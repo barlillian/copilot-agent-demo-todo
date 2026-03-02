@@ -1,0 +1,15 @@
+// 系統常數與參數
+
+const TAX_RATE = 0.08;
+const SHIPPING_COST = 50;
+const VIP_DISCOUNT = 0.1;
+const PREMIUM_DISCOUNT = 0.15;
+const FREE_SHIPPING_THRESHOLD = 1000;
+
+module.exports = {
+  TAX_RATE,
+  SHIPPING_COST,
+  VIP_DISCOUNT,
+  PREMIUM_DISCOUNT,
+  FREE_SHIPPING_THRESHOLD
+};

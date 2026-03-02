@@ -1,0 +1,22 @@
+### 錯誤處理範例 (HTTP)
+
+# 缺少欄位註冊
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+
+{
+  "username": "bob"
+}
+
+### 登入失敗
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "notfound@example.com",
+  "password": "wrong"
+}
+
+### 權限不足刪除任務
+DELETE http://localhost:3000/api/tasks/999
+Authorization: Bearer <token>
