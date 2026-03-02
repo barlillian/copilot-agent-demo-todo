@@ -88,22 +88,22 @@ class TodoApp {
 
     addTodo() {
         const input = document.getElementById('todoInput');
+        const deadlineInput = document.getElementById('deadlineInput');
         const text = input.value.trim();
-        
+        const deadline = deadlineInput.value;
         if (!text) return;
-
         const todo = {
             id: Date.now(),
             text: text,
+            deadline: deadline || '',
             completed: false,
             createdAt: new Date().toISOString()
         };
-
         this.todos.push(todo);
         this.saveTodos();
         this.render();
-        
         input.value = '';
+        deadlineInput.value = '';
     }
 
     toggleTodo(id) {
@@ -156,7 +156,6 @@ class TodoApp {
     render() {
         const todoList = document.getElementById('todoList');
         const filteredTodos = this.getFilteredTodos();
-        
         if (filteredTodos.length === 0) {
             todoList.innerHTML = '<li class="empty-state">沒有任務</li>';
         } else {
@@ -167,12 +166,41 @@ class TodoApp {
                            ${todo.completed ? 'checked' : ''} 
                            onchange="todoApp.toggleTodo(${todo.id})">
                     <span class="todo-text">${this.escapeHtml(todo.text)}</span>
+                    <span class="todo-deadline">${todo.deadline ? 'Deadline: ' + todo.deadline : ''}</span>
+                    <button class="edit-btn" onclick="todoApp.openEditModal(${todo.id})">Edit</button>
                     <button class="delete-btn" onclick="todoApp.deleteTodo(${todo.id})">刪除</button>
                 </li>
             `).join('');
         }
-        
         this.updateStats();
+    }
+
+    openEditModal(id) {
+        const todo = this.todos.find(t => t.id === id);
+        if (!todo) return;
+        document.getElementById('editTaskName').value = todo.text;
+        document.getElementById('editTaskDeadline').value = todo.deadline || '';
+        document.getElementById('editModal').style.display = 'block';
+        this.editingId = id;
+    }
+
+    closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+        this.editingId = null;
+    }
+
+    saveEdit() {
+        const id = this.editingId;
+        const todo = this.todos.find(t => t.id === id);
+        if (!todo) return;
+        const newText = document.getElementById('editTaskName').value.trim();
+        const newDeadline = document.getElementById('editTaskDeadline').value;
+        if (!newText) return;
+        todo.text = newText;
+        todo.deadline = newDeadline;
+        this.saveTodos();
+        this.render();
+        this.closeEditModal();
     }
 
     saveTodos() {
@@ -183,7 +211,10 @@ class TodoApp {
         const saved = localStorage.getItem('todos');
         if (saved) {
             try {
-                this.todos = JSON.parse(saved);
+                this.todos = JSON.parse(saved).map(todo => ({
+                    ...todo,
+                    deadline: todo.deadline || ''
+                }));
             } catch (e) {
                 console.error('載入任務失敗:', e);
                 this.todos = [];
@@ -199,4 +230,16 @@ class TodoApp {
 }
 
 // 初始化應用
-const todoApp = new TodoApp();
+window.addEventListener('DOMContentLoaded', () => {
+    const todoApp = new TodoApp();
+    // Modal event listeners
+    document.getElementById('closeEditModal').onclick = () => todoApp.closeEditModal();
+    document.getElementById('saveEditBtn').onclick = () => todoApp.saveEdit();
+    window.onclick = function(event) {
+        const modal = document.getElementById('editModal');
+        if (event.target === modal) {
+            todoApp.closeEditModal();
+        }
+    };
+    window.todoApp = todoApp; // expose for inline handlers
+});
